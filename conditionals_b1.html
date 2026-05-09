@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Conditionals — B1</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Serif 4',Georgia,serif;background:#f8fafc;min-height:100vh;-webkit-tap-highlight-color:transparent}
+.dm{font-family:'DM Sans',sans-serif}
+button{cursor:pointer;font-family:'DM Sans',sans-serif}
+input{font-family:'DM Sans',sans-serif}
+
+/* Header */
+#app-header{padding:28px 24px 20px;color:#fff;transition:background 0.4s}
+#app-header h1{font-size:26px;font-weight:900;letter-spacing:-0.5px}
+#app-header p{font-size:14px;opacity:0.85;margin-top:4px}
+
+/* Progress bar in header */
+.header-progress{margin-top:14px;background:rgba(255,255,255,0.2);border-radius:20px;height:10px;overflow:hidden}
+.header-progress-fill{height:100%;border-radius:20px;background:#fff;transition:width 0.5s}
+.header-progress-label{font-size:12px;margin-top:4px;opacity:0.8}
+
+/* Dashboard */
+.dashboard{max-width:760px;margin:0 auto;padding:20px 16px 40px}
+.dash-title{font-size:22px;font-weight:900;color:#1e293b;margin-bottom:16px}
+.section-card{background:#fff;border-radius:14px;border:1px solid #e5e7eb;padding:16px 20px;margin-bottom:12px;cursor:pointer;transition:all 0.2s}
+.section-card:hover{border-color:#94a3b8;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.section-card-header{display:flex;justify-content:space-between;align-items:center}
+.section-card-title{font-weight:700;font-size:17px}
+.section-card-sub{font-size:13px;color:#6b7280;margin-top:2px}
+.section-card-stars{display:flex;gap:4px}
+.section-card-ex{display:flex;gap:8px;margin-top:10px}
+.ex-chip{padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;border:1px solid #e5e7eb;background:#f9fafb;color:#6b7280}
+.ex-chip.done{background:#f0fdf4;border-color:#86efac;color:#166534}
+.ex-chip.perfect{background:#fef3c7;border-color:#fcd34d;color:#92400e}
+.back-btn{padding:8px 16px;border-radius:8px;border:1px solid #d1d5db;background:#fff;font-size:13px;font-weight:600;color:#374151;margin-bottom:16px}
+
+/* Tabs */
+.tab-bar{display:flex;overflow-x:auto;background:#fff;border-bottom:2px solid #e5e7eb;-webkit-overflow-scrolling:touch}
+.tab-bar button{flex:none;padding:12px 14px;border:none;border-bottom:3px solid transparent;background:transparent;color:#6b7280;font-weight:500;font-size:13px;white-space:nowrap;transition:all 0.2s}
+.tab-bar button.active{font-weight:700}
+
+/* Content */
+.content{max-width:760px;margin:0 auto;padding:24px 16px 60px}
+.section-title{font-size:22px;font-weight:900;margin-bottom:4px}
+.section-sub{font-size:15px;color:#6b7280}
+.formula-box{border-radius:12px;padding:16px 20px;margin:16px 0 20px}
+.formula-box .formula{font-weight:700;font-size:15px}
+.formula-box .uz{font-size:14px;opacity:0.8;margin-top:4px}
+.tip-box{border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:14px;line-height:1.6;border-left:4px solid}
+.examples-label{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;margin-bottom:8px}
+.example-item{padding:10px 16px;background:#fff;border-radius:8px;border:1px solid #e5e7eb;margin-bottom:6px;font-size:15px}
+.example-item .hi{font-weight:600}
+
+/* Exercise tabs */
+.ex-tabs{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap}
+.ex-tabs button{padding:8px 18px;border-radius:8px;border:2px solid #d1d5db;background:#fff;color:#374151;font-weight:600;font-size:14px;transition:all 0.15s}
+.ex-tabs button.active{color:#fff}
+
+/* Exercise card */
+.exercise-card{background:#f9fafb;border-radius:14px;padding:20px}
+.exercise-card h3{font-size:18px;font-weight:700;margin-bottom:4px}
+.exercise-card .instruction{font-size:14px;color:#6b7280;margin-bottom:16px}
+
+/* Items */
+.item-card{padding:14px 18px;background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:12px}
+.item-num{font-weight:700;margin-right:8px}
+.gap-input{padding:4px 8px;margin:0 4px;border-radius:6px;font-size:inherit;outline:none;transition:border-color 0.2s;border-width:2px;border-style:solid;display:inline-block;min-width:100px}
+.gap-input:focus{box-shadow:0 0 0 2px rgba(0,0,0,0.08)}
+.correction-text{font-size:13px;margin-top:6px}
+.correction-text.right{color:#22c55e}
+
+/* MC */
+.mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:500px){.mc-grid{grid-template-columns:1fr}}
+.mc-btn{padding:8px 12px;border-radius:8px;border:2px solid #d1d5db;background:#f9fafb;text-align:left;font-size:15px;transition:all 0.15s}
+
+/* Match */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.match-grid{grid-template-columns:1fr}}
+.match-col-label{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.match-btn{padding:10px 14px;border-radius:8px;border:2px solid #d1d5db;background:#fff;text-align:left;font-size:14px;line-height:1.5;transition:all 0.15s;width:100%;margin-bottom:6px}
+.match-btn:disabled{cursor:default}
+
+/* Error correction */
+.wrong-sentence{color:#ef4444;text-decoration:line-through;text-decoration-color:#fca5a5}
+.hint-btn{font-size:12px;border:none;padding:4px 10px;border-radius:12px;cursor:pointer;white-space:nowrap}
+.hint-text{font-size:13px;color:#6b7280;font-style:italic;margin:6px 0 8px}
+.ec-input{width:100%;padding:8px 12px;border:2px solid #d1d5db;border-radius:8px;font-size:15px}
+
+/* Type ID pills */
+.type-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.type-pill{padding:6px 12px;border-radius:20px;border:2px solid #d1d5db;background:#f9fafb;font-weight:600;font-size:12px;transition:all 0.15s}
+
+/* Translation */
+.translation-row{margin-top:10px}
+.reveal-btn{padding:6px 14px;border-radius:6px;border:1px solid #d1d5db;background:#fff;font-size:13px;font-weight:600;color:#6b7280;transition:all 0.15s}
+.reveal-btn:hover{background:#f3f4f6}
+.translation-answer{margin-top:8px;padding:10px 14px;border-radius:8px;font-size:15px;line-height:1.5;border-left:3px solid}
+.uz-sentence{font-size:17px;line-height:1.6;margin-bottom:10px}
+
+/* Buttons */
+.btn-primary{padding:10px 24px;border-radius:8px;border:none;color:#fff;font-weight:700;font-size:15px;transition:opacity 0.15s}
+.btn-row{margin-top:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.score{font-weight:700;font-size:18px}
+
+/* Nav */
+.nav-row{display:flex;justify-content:space-between;margin-top:28px}
+.nav-btn{padding:10px 20px;border-radius:8px;font-weight:600;font-size:14px}
+.nav-prev{border:1px solid #d1d5db;background:#fff;color:#374151}
+.nav-next{border:none;color:#fff}
+.nav-btn:disabled{opacity:0.4;cursor:default}
+
+/* Corrections panel */
+.corrections-panel{margin-top:12px;padding:12px;background:#fef2f2;border-radius:8px;font-size:14px}
+.corrections-panel strong{display:block;margin-bottom:4px}
+.corrections-panel div{margin-top:4px}
+
+/* Stars */
+.star{font-size:22px;color:#d1d5db}
+.star.earned{color:#f59e0b}
+
+/* Context sentence */
+.context-line{font-size:13px;color:#6b7280;font-style:italic;margin-bottom:6px}
+
+/* Reset progress */
+.reset-link{font-size:12px;color:#9ca3af;text-decoration:underline;cursor:pointer;margin-top:20px;display:inline-block}
+</style>
+</head>
+<body>
+
+<div id="app-header" style="background:linear-gradient(135deg,#4f46e5,#1e1b4b)">
+  <h1>Conditionals — B1</h1>
+  <p class="dm">Advanced practice with progress tracking</p>
+  <div class="header-progress"><div class="header-progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="header-progress-label dm" id="progress-label">0% complete</div>
+</div>
+
+<div id="main-content"></div>
+
+<script>
+/* ═══════════════════════════════════════
+   STORAGE
+   ═══════════════════════════════════════ */
+var STORAGE_KEY = 'cond_b1_progress';
+
+function loadProgress() {
+  try {
+    var d = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    return d || {};
+  } catch(e) { return {}; }
+}
+
+function saveScore(si, ei, score, total) {
+  var p = loadProgress();
+  var k = si+'-'+ei;
+  var pct = Math.round((score/total)*100);
+  if (!p[k] || pct > p[k].pct) {
+    p[k] = {score:score, total:total, pct:pct};
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+  updateProgressBar();
+}
+
+function getStars(si, ei) {
+  var p = loadProgress();
+  var k = si+'-'+ei;
+  if (!p[k]) return 0;
+  if (p[k].pct === 100) return 3;
+  if (p[k].pct >= 60) return 2;
+  return 1;
+}
+
+function getSectionStars(si) {
+  var sec = SECTIONS[si];
+  var total = 0;
+  sec.exercises.forEach(function(_,ei) { total += getStars(si,ei); });
+  return total;
+}
+
+function getOverallProgress() {
+  var totalEx = 0;
+  var doneEx = 0;
+  var p = loadProgress();
+  SECTIONS.forEach(function(sec,si) {
+    sec.exercises.forEach(function(_,ei) {
+      totalEx++;
+      if (p[si+'-'+ei]) doneEx++;
+    });
+  });
+  return {done:doneEx, total:totalEx, pct:totalEx?Math.round((doneEx/totalEx)*100):0};
+}
+
+function updateProgressBar() {
+  var prog = getOverallProgress();
+  var fill = document.getElementById('progress-fill');
+  var label = document.getElementById('progress-label');
+  if (fill) fill.style.width = prog.pct+'%';
+  if (label) label.textContent = prog.pct+'% complete — '+prog.done+'/'+prog.total+' exercises';
+}
+
+function resetProgress() {
+  if (confirm('Reset all progress? This cannot be undone.')) {
+    localStorage.removeItem(STORAGE_KEY);
+    exState = {};
+    currentView = 'dashboard';
+    renderApp();
+  }
+}
+
+/* ═══════════════════════════════════════
+   COLOURS
+   ═══════════════════════════════════════ */
+var COLORS = {
+  0:{bg:'#2563eb',light:'#dbeafe',mid:'#93c5fd',text:'#1e3a5f'},
+  1:{bg:'#d97706',light:'#fef3c7',mid:'#fcd34d',text:'#78350f'},
+  2:{bg:'#059669',light:'#d1fae5',mid:'#6ee7b7',text:'#064e3b'},
+  3:{bg:'#dc2626',light:'#fee2e2',mid:'#fca5a5',text:'#7f1d1d'}
+};
+
+/* ═══════════════════════════════════════
+   DATA
+   ═══════════════════════════════════════ */
+var SECTIONS = [
+  /* ═══ 0: TYPE 1 vs TYPE 2 ═══ */
+  {
+    id:0, title:'Type 1 vs Type 2', subtitle:'Real possibility or imagination?',
+    formula:'Type 1: If + Present Simple → will   |   Type 2: If + Past Simple → would',
+    uz:'Type 1 — haqiqiy, mumkin bo\'lgan vaziyat.  Type 2 — xayoliy, haqiqiy bo\'lmagan vaziyat.',
+    tip:'Ask yourself: is this situation possible or just imaginary? "If I see him" (likely) vs "If I were him" (impossible).',
+    examples:[
+      {hi:'Type 1:',text:' If I have time tonight, I\'ll call you. (I might have time — it\'s possible)'},
+      {hi:'Type 2:',text:' If I had a million dollars, I\'d travel the world. (I don\'t have it — imaginary)'}
+    ],
+    exercises:[
+      {
+        type:'mc', title:'Type 1 or Type 2?',
+        instruction:'Read the context, then choose the correct sentence.',
+        items:[
+          {stem:'You\'re looking at the sky — it\'s getting cloudy. You say:', opts:['If it rains, I\'ll take an umbrella.','If it rained, I\'d take an umbrella.'], c:0, ctx:'Real possibility — clouds are forming now.'},
+          {stem:'You\'re dreaming about being a famous chef. You say:', opts:['If I become a chef, I\'ll cook for celebrities.','If I became a famous chef, I\'d cook for celebrities.'], c:1, ctx:'Imaginary — you\'re just daydreaming.'},
+          {stem:'Your friend might visit this weekend. You say:', opts:['If she comes, we\'ll go to the park.','If she came, we\'d go to the park.'], c:0, ctx:'Real possibility — she said maybe.'},
+          {stem:'You can\'t speak Japanese, but you imagine living in Tokyo. You say:', opts:['If I speak Japanese, I\'ll move to Tokyo.','If I spoke Japanese, I\'d move to Tokyo.'], c:1, ctx:'Unreal — you don\'t speak Japanese.'},
+          {stem:'The exam is next week. Your teacher says:', opts:['If you study hard, you\'ll pass.','If you studied hard, you\'d pass.'], c:0, ctx:'Real advice — the exam is coming.'},
+          {stem:'You see a lottery ticket and imagine winning. You say:', opts:['If I win the lottery, I\'ll buy a house.','If I won the lottery, I\'d buy a house.'], c:1, ctx:'Very unlikely — pure imagination.'}
+        ]
+      },
+      {
+        type:'gapfill', title:'Fill in the Gaps',
+        instruction:'Complete with the correct Type 1 or Type 2 form based on the context.',
+        items:[
+          {s:'My phone is at 5%. If it ___ (die), I ___ (not be) able to call you. [real — it might die soon]', a:[['dies'],["won't be","will not be"]]},
+          {s:'I\'m not a doctor. If I ___ (be) a doctor, I ___ (help) people for free. [imaginary]', a:[['were','was'],["would help","'d help"]]},
+          {s:'If you ___ (not hurry), you ___ (miss) the bus. It leaves in 5 minutes! [real warning]', a:[["don't hurry","do not hurry"],["will miss","'ll miss"]]},
+          {s:'If I ___ (have) wings, I ___ (fly) to Bukhara every weekend. [imaginary]', a:[['had'],["would fly","'d fly"]]},
+          {s:'If she ___ (pass) the IELTS, she ___ (apply) to universities in the UK. [real plan]', a:[['passes'],["will apply","'ll apply"]]}
+        ]
+      }
+    ]
+  },
+  /* ═══ 1: TYPE 2 vs TYPE 3 ═══ */
+  {
+    id:1, title:'Type 2 vs Type 3', subtitle:'Imaginary present or past regret?',
+    formula:'Type 2: If + Past Simple → would + V   |   Type 3: If + Past Perfect → would have + V3',
+    uz:'Type 2 — hozir haqiqiy bo\'lmagan.  Type 3 — o\'tmishda sodir bo\'lmagan narsa, afsuslanish.',
+    tip:'Type 2 = "I don\'t have it NOW, but I wish I did." Type 3 = "I didn\'t do it THEN, and I regret it."',
+    examples:[
+      {hi:'Type 2:',text:' If I knew the answer, I would tell you. (I don\'t know it right now)'},
+      {hi:'Type 3:',text:' If I had known the answer, I would have told you. (The test is over — too late)'}
+    ],
+    exercises:[
+      {
+        type:'mc', title:'Type 2 or Type 3?',
+        instruction:'Read the context, then choose the correct sentence.',
+        items:[
+          {stem:'You don\'t have a car right now. You say:', opts:['If I had a car, I would drive to work.','If I had had a car, I would have driven to work.'], c:0, ctx:'Current situation — you still don\'t have one.'},
+          {stem:'Yesterday you missed your alarm and were late for class. You say:', opts:['If I woke up on time, I wouldn\'t be late.','If I had woken up on time, I wouldn\'t have been late.'], c:1, ctx:'Past regret — it already happened yesterday.'},
+          {stem:'You can\'t cook. You imagine being a good cook:', opts:['If I could cook, I would make plov every day.','If I could have cooked, I would have made plov.'], c:0, ctx:'Current wish — you still can\'t cook.'},
+          {stem:'Last week you didn\'t bring an umbrella and got wet. You say:', opts:['If I brought an umbrella, I wouldn\'t get wet.','If I had brought an umbrella, I wouldn\'t have gotten wet.'], c:1, ctx:'Last week — it\'s done.'},
+          {stem:'You don\'t speak French. You imagine:', opts:['If I spoke French, I\'d live in Paris.','If I had spoken French, I\'d have lived in Paris.'], c:0, ctx:'Present imaginary — you still don\'t speak it.'},
+          {stem:'You didn\'t listen to your friend\'s advice last month and made a bad decision:', opts:['If I listened to her, I would make a better decision.','If I had listened to her, I would have made a better decision.'], c:1, ctx:'Past regret — the decision is already made.'}
+        ]
+      },
+      {
+        type:'gapfill', title:'Fill in the Gaps',
+        instruction:'Complete with Type 2 (present unreal) or Type 3 (past regret) based on the context in brackets.',
+        items:[
+          {s:'If I ___ (know) her number, I ___ (call) her. [I don\'t know it now]', a:[['knew'],["would call","'d call"]]},
+          {s:'If he ___ (study) harder last semester, he ___ (pass) the exam. [past regret]', a:[['had studied'],["would have passed","would've passed"]]},
+          {s:'If we ___ (live) near the sea, we ___ (swim) every day. [we don\'t live there]', a:[['lived'],["would swim","'d swim"]]},
+          {s:'If I ___ (not eat) that street food yesterday, I ___ (not get) sick. [past — already happened]', a:[["hadn't eaten","had not eaten"],["wouldn't have gotten","would not have gotten","wouldn't have got","would not have got"]]},
+          {s:'If she ___ (be) more confident, she ___ (speak) up in meetings. [she\'s not confident now]', a:[['were','was'],["would speak","'d speak"]]}
+        ]
+      }
+    ]
+  },
+  /* ═══ 2: CONDITIONAL CONNECTORS ═══ */
+  {
+    id:2, title:'Conditional Connectors', subtitle:'unless / as long as / provided / in case',
+    formula:'unless = if ... not  |  as long as / provided (that) = only if  |  in case = because it might happen',
+    uz:'unless = agar ... bo\'lmasa  |  as long as / provided = faqat ... bo\'lsa  |  in case = ehtimol ... bo\'lsa deb',
+    tip:'"Unless" replaces "if ... not". "As long as" and "provided" mean the condition MUST be true. "In case" is about preparing for a possibility.',
+    examples:[
+      {hi:'Unless:',text:' I\'ll go unless it rains. (= I\'ll go if it doesn\'t rain)'},
+      {hi:'As long as:',text:' You can borrow my car as long as you drive carefully.'},
+      {hi:'Provided:',text:' She\'ll pass provided she studies hard enough.'},
+      {hi:'In case:',text:' Take an umbrella in case it rains. (it might rain — be prepared)'}
+    ],
+    exercises:[
+      {
+        type:'mc', title:'Choose the Correct Connector',
+        instruction:'Select the best connector to complete each sentence.',
+        items:[
+          {stem:'You can go out tonight _____ you finish your homework first.', opts:['unless','in case','as long as'], c:2},
+          {stem:'I\'ll take a jacket _____ it gets cold later.', opts:['unless','in case','provided'], c:1},
+          {stem:'_____ you hurry, we\'ll miss the beginning of the film.', opts:['In case','Provided','Unless'], c:2},
+          {stem:'You can use my laptop _____ you don\'t download anything.', opts:['unless','in case','provided'], c:2},
+          {stem:'We won\'t go to the beach _____ the weather improves.', opts:['in case','unless','as long as'], c:1},
+          {stem:'Take some extra money _____ you see something you want to buy.', opts:['unless','in case','as long as'], c:1},
+          {stem:'I won\'t tell anyone your secret _____ you want me to.', opts:['in case','unless','provided'], c:1},
+          {stem:'He\'ll get the scholarship _____ that he keeps his grades up.', opts:['unless','in case','provided'], c:2},
+          {stem:'You can stay up late _____ you don\'t wake your brother.', opts:['unless','in case','as long as'], c:2},
+          {stem:'Write down the address _____ you forget it.', opts:['unless','in case','provided'], c:1}
+        ]
+      },
+      {
+        type:'gapfill', title:'Rewrite with the Connector',
+        instruction:'Fill in the blank with the connector given in brackets.',
+        items:[
+          {s:'You can stay here ___ ___ ___ you keep quiet. (as long as)', a:[['as'],['long'],['as']]},
+          {s:'___ she apologizes, I won\'t speak to her again. (unless)', a:[['Unless']]},
+          {s:'Take a charger ___ ___ your phone battery dies. (in case)', a:[['in'],['case']]},
+          {s:'I\'ll lend you the book ___ that you return it by Friday. (provided)', a:[['provided']]},
+          {s:'___ you leave now, you\'ll be late. (unless)', a:[['Unless']]},
+          {s:'You can come to the party ___ ___ ___ you bring something to eat. (as long as)', a:[['as'],['long'],['as']]}
+        ]
+      }
+    ]
+  },
+  /* ═══ 3: MIXED REVIEW — Uzbek-first ═══ */
+  {
+    id:3, title:'Mixed Review', subtitle:'Translate from Uzbek & identify the type',
+    formula:'Type 1 / Type 2 / Type 3 / Connector',
+    uz:'Gaplarni o\'qing, turini aniqlang, so\'ng inglizcha tarjimasini yozing va tekshiring.',
+    tip:'',
+    examples:[],
+    exercises:[
+      {
+        type:'identify', title:'Translate & Identify',
+        instruction:'Read each Uzbek sentence, choose its type, type your English translation, then check.',
+        items:[
+          {uz:'Agar ertaga qor yog\'sa, biz uyda qolamiz.', en:'If it snows tomorrow, we\'ll stay at home.', a:0, label:'Type 1'},
+          {uz:'Agar men prezident bo\'lganimda, ta\'limni bepul qilardim.', en:'If I were president, I would make education free.', a:1, label:'Type 2'},
+          {uz:'Agar u ertaroq uyg\'onganda, poyezdga ulgurgan bo\'lardi.', en:'If she had woken up earlier, she would have caught the train.', a:2, label:'Type 3'},
+          {uz:'Agar shoshilmasang, kechikasan.', en:'Unless you hurry, you\'ll be late.', a:3, label:'Connector'},
+          {uz:'Agar menda ko\'proq vaqt bo\'lganda, gitara chalishni o\'rganardim.', en:'If I had more time, I would learn to play the guitar.', a:1, label:'Type 2'},
+          {uz:'Telefoning o\'chib qolsa deb, zaryadkani ol.', en:'Take a charger in case your phone dies.', a:3, label:'Connector'},
+          {uz:'Agar u menga aytganda, men yordam bergan bo\'lardim.', en:'If he had told me, I would have helped.', a:2, label:'Type 3'},
+          {uz:'Agar sen qattiq tayyorlansang, imtihondan o\'tasan.', en:'If you study hard, you\'ll pass the exam.', a:0, label:'Type 1'},
+          {uz:'Agar shovqin qilmasangiz, kutubxonada qolishingiz mumkin.', en:'You can stay in the library as long as you don\'t make noise.', a:3, label:'Connector'},
+          {uz:'Agar u pul tejaganda, yangi telefon olgan bo\'lardi.', en:'If she had saved money, she would have bought a new phone.', a:2, label:'Type 3'}
+        ]
+      }
+    ]
+  }
+];
+
+/* ═══════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════ */
+var currentView = 'dashboard'; // 'dashboard' or 'section'
+var activeSection = 0;
+var activeExercise = 0;
+var exState = {};
+
+function getExState(si,ei) { var k=si+'-'+ei; if(!exState[k])exState[k]={}; return exState[k]; }
+function resetExState(si,ei) { exState[si+'-'+ei]={}; }
+
+/* Utilities */
+function norm(s){return s.toLowerCase().replace(/['']/g,"'").replace(/\s+/g,' ').trim();}
+function normNoPunc(s){return norm(s).replace(/[.,!?]/g,'');}
+function shuffleArr(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function escAttr(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function starsHTML(count,max) { var h=''; for(var i=0;i<max;i++) h+='<span class="star'+(i<count?' earned':'')+'">★</span>'; return h; }
+
+/* ═══════════════════════════════════════
+   RENDER APP
+   ═══════════════════════════════════════ */
+function renderApp() {
+  updateProgressBar();
+  var main = document.getElementById('main-content');
+  if (currentView === 'dashboard') renderDashboard(main);
+  else renderSection(main);
+}
+
+/* ── Dashboard ── */
+function renderDashboard(container) {
+  var html = '<div class="dashboard">';
+  html += '<div class="dash-title">Choose a Section</div>';
+
+  SECTIONS.forEach(function(sec, si) {
+    var c = COLORS[si];
+    var stars = getSectionStars(si);
+    var maxStars = sec.exercises.length * 3;
+    html += '<div class="section-card" onclick="openSection('+si+')" style="border-left:4px solid '+c.bg+'">';
+    html += '<div class="section-card-header">';
+    html += '<div><div class="section-card-title dm" style="color:'+c.bg+'">'+sec.title+'</div>';
+    html += '<div class="section-card-sub dm">'+sec.subtitle+'</div></div>';
+    html += '<div class="section-card-stars">'+starsHTML(stars, maxStars)+'</div>';
+    html += '</div>';
+    html += '<div class="section-card-ex dm">';
+    sec.exercises.forEach(function(ex, ei) {
+      var s = getStars(si, ei);
+      var cls = s===3 ? 'perfect' : s>0 ? 'done' : '';
+      html += '<span class="ex-chip '+cls+'">'+(s>0?'★'.repeat(s)+' ':'')+ex.title+'</span>';
+    });
+    html += '</div>';
+    html += '</div>';
+  });
+
+  html += '<span class="reset-link dm" onclick="resetProgress()">Reset all progress</span>';
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function openSection(si) {
+  activeSection = si;
+  activeExercise = 0;
+  currentView = 'section';
+  renderApp();
+}
+
+/* ── Section ── */
+function renderSection(container) {
+  var sec = SECTIONS[activeSection];
+  var c = COLORS[activeSection];
+
+  var hdr = document.getElementById('app-header');
+  hdr.style.background = 'linear-gradient(135deg,'+c.bg+' 0%,'+c.text+' 100%)';
+
+  var html = '<div class="content">';
+  html += '<button class="back-btn dm" onclick="goBack()">← All Sections</button>';
+
+  html += '<h2 class="section-title" style="color:'+c.bg+'">'+sec.title+'</h2>';
+  html += '<p class="section-sub dm">'+sec.subtitle+'</p>';
+
+  html += '<div class="formula-box" style="background:'+c.light+';border:1px solid '+c.mid+'">';
+  html += '<div class="formula dm" style="color:'+c.text+'">📐 '+sec.formula+'</div>';
+  html += '<div class="uz dm" style="color:'+c.text+'">🇺🇿 '+sec.uz+'</div>';
+  html += '</div>';
+
+  if (sec.tip) {
+    html += '<div class="tip-box dm" style="background:'+c.light+';border-left-color:'+c.bg+';color:'+c.text+'">💡 '+sec.tip+'</div>';
+  }
+
+  if (sec.examples.length) {
+    html += '<div class="examples-label dm">Examples</div>';
+    sec.examples.forEach(function(ex) {
+      html += '<div class="example-item dm"><span class="hi" style="color:'+c.bg+'">'+ex.hi+'</span>'+ex.text+'</div>';
+    });
+  }
+
+  if (sec.exercises.length > 1) {
+    html += '<div class="ex-tabs">';
+    sec.exercises.forEach(function(ex,i) {
+      var stars = getStars(activeSection, i);
+      var cls = i===activeExercise ? 'active' : '';
+      var style = i===activeExercise ? 'background:'+c.bg+';border-color:'+c.bg+';color:#fff' : '';
+      html += '<button class="'+cls+'" style="'+style+'" onclick="activeExercise='+i+';renderApp()">'+(stars?'★'.repeat(stars)+' ':'')+ex.title+'</button>';
+    });
+    html += '</div>';
+  }
+
+  var ex = sec.exercises[activeExercise];
+  html += '<div class="exercise-card" style="border:1px solid '+c.mid+'40">';
+  html += '<h3 style="color:'+c.text+'">'+ex.title+'</h3>';
+  html += '<p class="instruction dm">'+ex.instruction+'</p>';
+  html += '<div id="exercise-body"></div>';
+  html += '</div>';
+
+  // Nav
+  var isFirst = activeSection===0 && activeExercise===0;
+  var isLast = activeSection===SECTIONS.length-1 && activeExercise===sec.exercises.length-1;
+  html += '<div class="nav-row">';
+  html += '<button class="nav-btn nav-prev dm" '+(isFirst?'disabled':'')+' onclick="navPrev()">← Previous</button>';
+  html += '<button class="nav-btn nav-next dm" style="background:'+(isLast?'#d1d5db':c.bg)+'" '+(isLast?'disabled':'')+' onclick="navNext()">Next →</button>';
+  html += '</div>';
+
+  html += '</div>';
+  container.innerHTML = html;
+  renderExercise(ex, c, activeSection, activeExercise);
+}
+
+function goBack() {
+  currentView = 'dashboard';
+  var hdr = document.getElementById('app-header');
+  hdr.style.background = 'linear-gradient(135deg,#4f46e5,#1e1b4b)';
+  renderApp();
+}
+
+function navPrev() {
+  if (activeExercise>0) activeExercise--;
+  else if (activeSection>0){activeSection--;activeExercise=SECTIONS[activeSection].exercises.length-1;}
+  renderApp();
+}
+function navNext() {
+  var sec=SECTIONS[activeSection];
+  if (activeExercise<sec.exercises.length-1) activeExercise++;
+  else if (activeSection<SECTIONS.length-1){activeSection++;activeExercise=0;}
+  renderApp();
+}
+
+/* ═══════════════════════════════════════
+   EXERCISE RENDERERS
+   ═══════════════════════════════════════ */
+function renderExercise(ex,c,si,ei) {
+  switch(ex.type){
+    case 'gapfill':renderGapFill(ex,c,si,ei);break;
+    case 'match':renderMatch(ex,c,si,ei);break;
+    case 'mc':renderMC(ex,c,si,ei);break;
+    case 'error':renderError(ex,c,si,ei);break;
+    case 'identify':renderIdentify(ex,c,si,ei);break;
+  }
+}
+
+/* ── Gap Fill ── */
+function renderGapFill(ex,c,si,ei) {
+  var st=getExState(si,ei);
+  if(!st.inputs)st.inputs=ex.items.map(function(it){return it.a.map(function(){return '';});});
+  if(!st.checked)st.checked=false;
+  if(!st.results)st.results=null;
+
+  var body=document.getElementById('exercise-body');
+  var html='';
+
+  ex.items.forEach(function(item,qi){
+    html+='<div class="item-card" style="font-size:16px;line-height:2.2">';
+    html+='<span class="item-num" style="color:'+c.bg+'">'+(qi+1)+'.</span>';
+    var parts=item.s.split('___');
+    parts.forEach(function(part,pi){
+      html+='<span>'+part+'</span>';
+      if(pi<parts.length-1){
+        var val=st.inputs[qi][pi];
+        var bc=st.checked?(st.results[qi][pi]?'#22c55e':'#ef4444'):c.mid;
+        var bg=st.checked?(st.results[qi][pi]?'#f0fdf4':'#fef2f2'):'#fff';
+        html+='<input class="gap-input" type="text" data-qi="'+qi+'" data-pi="'+pi+'" value="'+escAttr(val)+'" '+(st.checked?'disabled':'')+' style="border-color:'+bc+';background:'+bg+';width:'+Math.max(120,(val.length||8)*11)+'px" placeholder="...">';
+      }
+    });
+    if(st.checked&&!st.results[qi].every(Boolean)){
+      html+='<div class="correction-text right">✓ Correct: '+item.a.map(function(x){return x[0];}).join(' / ')+'</div>';
+    }
+    html+='</div>';
+  });
+
+  html+=btnRow(st,c,si,ei,ex.items.reduce(function(s,it){return s+it.a.length;},0),'checkGapFill');
+  body.innerHTML=html;
+
+  body.querySelectorAll('.gap-input').forEach(function(inp){
+    inp.addEventListener('input',function(){
+      var qi=parseInt(this.getAttribute('data-qi'));
+      var pi=parseInt(this.getAttribute('data-pi'));
+      st.inputs[qi][pi]=this.value;
+      this.style.width=Math.max(120,(this.value.length||8)*11)+'px';
+    });
+  });
+}
+
+function checkGapFill(si,ei){
+  var ex=SECTIONS[si].exercises[ei];
+  var st=getExState(si,ei);
+  st.results=ex.items.map(function(item,qi){
+    return item.a.map(function(accepted,gi){
+      return accepted.some(function(a){return norm(a)===norm(st.inputs[qi][gi]);});
+    });
+  });
+  st.checked=true;
+  var total=ex.items.reduce(function(s,it){return s+it.a.length;},0);
+  var correct=st.results.reduce(function(s,r){return s+r.filter(Boolean).length;},0);
+  saveScore(si,ei,correct,total);
+  renderApp();
+}
+
+/* ── Multiple Choice ── */
+function renderMC(ex,c,si,ei){
+  var st=getExState(si,ei);
+  if(!st.selected)st.selected=ex.items.map(function(){return null;});
+  if(!st.checked)st.checked=false;
+
+  var body=document.getElementById('exercise-body');
+  var html='';
+
+  ex.items.forEach(function(item,qi){
+    html+='<div class="item-card">';
+    if(item.ctx) html+='<div class="context-line dm">'+item.ctx+'</div>';
+    html+='<div style="font-weight:600;font-size:16px;margin-bottom:10px"><span style="color:'+c.bg+';margin-right:8px">'+(qi+1)+'.</span>'+item.stem+'</div>';
+    html+='<div class="mc-grid">';
+    item.opts.forEach(function(opt,oi){
+      var isSel=st.selected[qi]===oi;
+      var isCorr=item.c===oi;
+      var bg='#f9fafb',border='#d1d5db';
+      if(st.checked){
+        if(isCorr){bg='#f0fdf4';border='#22c55e';}
+        else if(isSel&&!isCorr){bg='#fef2f2';border='#ef4444';}
+      }else if(isSel){bg=c.light;border=c.bg;}
+      html+='<button class="mc-btn dm" style="border-color:'+border+';background:'+bg+'" '+(st.checked?'disabled':'')+' onclick="mcSelect('+si+','+ei+','+qi+','+oi+')">'+String.fromCharCode(97+oi)+') '+opt+'</button>';
+    });
+    html+='</div></div>';
+  });
+
+  var allDone=st.selected.indexOf(null)===-1;
+  html+=btnRowMC(st,c,si,ei,ex.items.length,allDone);
+  body.innerHTML=html;
+}
+
+function mcSelect(si,ei,qi,oi){var st=getExState(si,ei);if(st.checked)return;st.selected[qi]=oi;renderApp();}
+
+function checkMC(si,ei){
+  var ex=SECTIONS[si].exercises[ei];
+  var st=getExState(si,ei);
+  st.checked=true;
+  var correct=ex.items.filter(function(it,qi){return st.selected[qi]===it.c;}).length;
+  saveScore(si,ei,correct,ex.items.length);
+  renderApp();
+}
+
+/* ── Match Halves ── */
+function renderMatch(ex,c,si,ei){
+  var st=getExState(si,ei);
+  if(!st.shuffled)st.shuffled=shuffleArr(ex.pairs.map(function(p,i){return{text:p.r,idx:i};}));
+  if(st.selectedLeft===undefined)st.selectedLeft=null;
+  if(!st.matches)st.matches={};
+  if(!st.checked)st.checked=false;
+  if(!st.results)st.results=null;
+
+  var body=document.getElementById('exercise-body');
+  var html='<div class="match-grid">';
+  html+='<div><div class="match-col-label dm" style="color:'+c.bg+'">Beginning</div>';
+  ex.pairs.forEach(function(p,i){
+    var matched=st.matches[i]!==undefined;var selected=st.selectedLeft===i;
+    var bc='#d1d5db',bg='#fff';
+    if(st.checked){if(st.results[i]===true){bc='#22c55e';bg='#f0fdf4';}else if(st.results[i]===false){bc='#ef4444';bg='#fef2f2';}}
+    else{if(selected){bc=c.bg;bg=c.light;}else if(matched){bc=c.mid;bg=c.light;}}
+    html+='<button class="match-btn dm" style="border-color:'+bc+';background:'+bg+'" '+(st.checked||matched?'disabled':'')+' onclick="matchLeftClick('+si+','+ei+','+i+')">'+p.l+'</button>';
+  });
+  html+='</div><div><div class="match-col-label dm" style="color:'+c.bg+'">Ending</div>';
+  st.shuffled.forEach(function(item,ri){
+    var me=null;Object.keys(st.matches).forEach(function(k){if(st.matches[k]===ri)me=k;});
+    var bc='#d1d5db',bg='#fff',op='1';
+    if(me!==null){if(st.checked){if(st.results[me]){bc='#22c55e';bg='#f0fdf4';}else{bc='#ef4444';bg='#fef2f2';}}else{bc=c.mid;bg=c.light;op='0.7';}}
+    else if(st.selectedLeft!==null){bc=c.bg;}
+    html+='<button class="match-btn dm" style="border-color:'+bc+';background:'+bg+';opacity:'+op+'" '+(st.checked||me!==null?'disabled':'')+' onclick="matchRightClick('+si+','+ei+','+ri+')">'+item.text+'</button>';
+  });
+  html+='</div></div>';
+
+  if(st.checked){var anyW=Object.keys(st.results).some(function(k){return!st.results[k];});
+    if(anyW){html+='<div class="corrections-panel"><strong>Correct pairs:</strong>';ex.pairs.forEach(function(p,i){if(st.results[i]===false)html+='<div>'+p.l+' → '+p.r+'</div>';});html+='</div>';}}
+
+  var allM=Object.keys(st.matches).length===ex.pairs.length;
+  html+=btnRowMC(st,c,si,ei,ex.pairs.length,allM,'checkMatch');
+  body.innerHTML=html;
+}
+
+function matchLeftClick(si,ei,i){var st=getExState(si,ei);if(st.checked||st.matches[i]!==undefined)return;st.selectedLeft=st.selectedLeft===i?null:i;renderApp();}
+function matchRightClick(si,ei,ri){var st=getExState(si,ei);if(st.checked||st.selectedLeft===null)return;if(Object.values(st.matches).indexOf(ri)!==-1)return;st.matches[st.selectedLeft]=ri;st.selectedLeft=null;renderApp();}
+function checkMatch(si,ei){var ex=SECTIONS[si].exercises[ei];var st=getExState(si,ei);st.results={};Object.keys(st.matches).forEach(function(li){st.results[li]=st.shuffled[st.matches[li]].idx===parseInt(li);});st.checked=true;var correct=Object.values(st.results).filter(Boolean).length;saveScore(si,ei,correct,ex.pairs.length);renderApp();}
+
+/* ── Error Correction ── */
+function renderError(ex,c,si,ei){
+  var st=getExState(si,ei);
+  if(!st.inputs)st.inputs=ex.items.map(function(){return '';});
+  if(!st.checked)st.checked=false;
+  if(!st.results)st.results=null;
+  if(!st.hints)st.hints=ex.items.map(function(){return false;});
+
+  var body=document.getElementById('exercise-body');
+  var html='';
+  ex.items.forEach(function(item,i){
+    html+='<div class="item-card">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:8px">';
+    html+='<div style="font-size:16px"><span class="item-num" style="color:'+c.bg+'">'+(i+1)+'.</span><span class="wrong-sentence">'+item.w+'</span></div>';
+    if(!st.checked) html+='<button class="hint-btn dm" style="background:'+c.light+';color:'+c.bg+'" onclick="toggleHint('+si+','+ei+','+i+')">'+(st.hints[i]?'Hide hint':'💡 Hint')+'</button>';
+    html+='</div>';
+    if(st.hints[i]&&!st.checked) html+='<div class="hint-text dm">'+item.h+'</div>';
+    var bc=st.checked?(st.results[i]?'#22c55e':'#ef4444'):'#d1d5db';
+    var bg=st.checked?(st.results[i]?'#f0fdf4':'#fef2f2'):'#fff';
+    html+='<input class="ec-input dm" type="text" data-idx="'+i+'" value="'+escAttr(st.inputs[i])+'" '+(st.checked?'disabled':'')+' style="border-color:'+bc+';background:'+bg+'" placeholder="Type the corrected sentence...">';
+    if(st.checked&&!st.results[i]) html+='<div class="correction-text right">✓ Correct: '+item.c[0]+'</div>';
+    html+='</div>';
+  });
+  html+=btnRow(st,c,si,ei,ex.items.length,'checkError');
+  body.innerHTML=html;
+  body.querySelectorAll('.ec-input').forEach(function(inp){inp.addEventListener('input',function(){st.inputs[parseInt(this.getAttribute('data-idx'))]=this.value;});});
+}
+
+function toggleHint(si,ei,i){var st=getExState(si,ei);st.hints[i]=!st.hints[i];renderApp();}
+function checkError(si,ei){var ex=SECTIONS[si].exercises[ei];var st=getExState(si,ei);st.results=ex.items.map(function(item,i){var n=normNoPunc(st.inputs[i]);return item.c.some(function(c){return normNoPunc(c)===n;});});st.checked=true;var correct=st.results.filter(Boolean).length;saveScore(si,ei,correct,ex.items.length);renderApp();}
+
+/* ── Identify Type (Uzbek-first + translation) ── */
+function renderIdentify(ex,c,si,ei){
+  var st=getExState(si,ei);
+  if(!st.selected)st.selected=ex.items.map(function(){return null;});
+  if(!st.checked)st.checked=false;
+  if(!st.revealed)st.revealed=ex.items.map(function(){return false;});
+  if(!st.translations)st.translations=ex.items.map(function(){return '';});
+
+  var typeLabels=['Type 1','Type 2','Type 3','Connector'];
+  var typeColors=[COLORS[0],COLORS[1],COLORS[2],COLORS[3]];
+
+  var body=document.getElementById('exercise-body');
+  var html='';
+
+  ex.items.forEach(function(item,qi){
+    html+='<div class="item-card">';
+    html+='<div class="uz-sentence"><span class="item-num" style="color:'+c.bg+'">'+(qi+1)+'.</span> 🇺🇿 <em>'+item.uz+'</em></div>';
+    html+='<div class="type-pills">';
+    typeLabels.forEach(function(label,t){
+      var isSel=st.selected[qi]===t;var isCorr=item.a===t;var tc=typeColors[t];
+      var bg='#f9fafb',border='#d1d5db',textColor='#374151';
+      if(st.checked){if(isCorr){bg=tc.light;border=tc.bg;textColor=tc.text;}else if(isSel&&!isCorr){bg='#fef2f2';border='#ef4444';textColor='#ef4444';}}
+      else if(isSel){bg=tc.light;border=tc.bg;textColor=tc.text;}
+      html+='<button class="type-pill dm" style="border-color:'+border+';background:'+bg+';color:'+textColor+'" '+(st.checked?'disabled':'')+' onclick="idSelect('+si+','+ei+','+qi+','+t+')">'+label+'</button>';
+    });
+    html+='</div>';
+    // Translation
+    html+='<div class="translation-row">';
+    html+='<div style="margin-top:10px"><label class="dm" style="font-size:13px;font-weight:600;color:#6b7280;display:block;margin-bottom:4px">Your translation:</label>';
+    html+='<input class="ec-input dm tr-input" type="text" data-qi="'+qi+'" value="'+escAttr(st.translations[qi])+'" placeholder="Type the English translation here..." style="border-color:'+(st.revealed[qi]?c.mid:'#d1d5db')+'"></div>';
+    if(st.revealed[qi]){
+      var tc=typeColors[item.a];
+      html+='<div class="translation-answer" style="background:'+tc.light+';border-left-color:'+tc.bg+';color:'+tc.text+'">🇬🇧 '+item.en+'</div>';
+    } else {
+      html+='<div style="margin-top:8px"><button class="reveal-btn dm" onclick="revealTranslation('+si+','+ei+','+qi+')">Show Answer</button></div>';
+    }
+    html+='</div></div>';
+  });
+
+  var allDone=st.selected.indexOf(null)===-1;
+  html+=btnRowMC(st,c,si,ei,ex.items.length,allDone,'checkIdentify');
+  body.innerHTML=html;
+
+  body.querySelectorAll('.tr-input').forEach(function(inp){
+    inp.addEventListener('input',function(){st.translations[parseInt(this.getAttribute('data-qi'))]=this.value;});
+  });
+}
+
+function revealTranslation(si,ei,qi){var st=getExState(si,ei);st.revealed[qi]=true;renderApp();}
+function idSelect(si,ei,qi,t){var st=getExState(si,ei);if(st.checked)return;st.selected[qi]=t;renderApp();}
+function checkIdentify(si,ei){var ex=SECTIONS[si].exercises[ei];var st=getExState(si,ei);st.checked=true;var correct=ex.items.filter(function(it,qi){return st.selected[qi]===it.a;}).length;saveScore(si,ei,correct,ex.items.length);renderApp();}
+
+/* ── Reset ── */
+function resetEx(si,ei){resetExState(si,ei);renderApp();}
+
+/* ── Button helpers ── */
+function btnRow(st,c,si,ei,total,checkFn){
+  var html='<div class="btn-row">';
+  if(!st.checked){
+    html+='<button class="btn-primary dm" style="background:'+c.bg+'" onclick="'+checkFn+'('+si+','+ei+')">Check Answers</button>';
+  } else {
+    var correct = st.results ? (Array.isArray(st.results) ? st.results.reduce(function(s,r){return s+(Array.isArray(r)?r.filter(Boolean).length:(r?1:0));},0) : 0) : 0;
+    var emoji=correct===total?'🎉':correct>=total/2?'👍':'💪';
+    html+='<div class="score dm" style="color:'+c.bg+'">'+correct+'/'+total+' correct '+emoji+' '+starsHTML(getStars(si,ei),3)+'</div>';
+    html+='<button class="btn-primary dm" style="background:#6b7280" onclick="resetEx('+si+','+ei+')">Try Again</button>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function btnRowMC(st,c,si,ei,total,ready,fn){
+  fn = fn || 'checkMC';
+  var html='<div class="btn-row">';
+  if(!st.checked){
+    html+='<button class="btn-primary dm" style="background:'+(ready?c.bg:'#9ca3af')+'" '+(ready?'':'disabled')+' onclick="'+fn+'('+si+','+ei+')">Check Answers</button>';
+  } else {
+    var p=loadProgress();var k=si+'-'+ei;var correct=p[k]?p[k].score:0;
+    var emoji=correct===total?'🎉':correct>=total/2?'👍':'💪';
+    html+='<div class="score dm" style="color:'+c.bg+'">'+correct+'/'+total+' correct '+emoji+' '+starsHTML(getStars(si,ei),3)+'</div>';
+    html+='<button class="btn-primary dm" style="background:#6b7280" onclick="resetEx('+si+','+ei+')">Try Again</button>';
+  }
+  html+='</div>';
+  return html;
+}
+
+/* ── Init ── */
+renderApp();
+</script>
+</body>
+</html>
